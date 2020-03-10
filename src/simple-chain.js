@@ -1,21 +1,35 @@
 const chainMaker = {
-  listLinks: [],
-  getLength: () => listLinks.length(),
-  addLink: (value) => this.listLinks.push(`( ${value} )~~`),
-  removeLink: (position) => {
-    if (position > getLength() || position < 1 || typeof (position) !== 'number') {
-      listLinks = [];
-      throw new Error('Error');
+    chain: [],
+    getLength() {
+      return this.chain.length;
+    },
+    addLink(value) {
+      this.chain.push(value === undefined ? '' : String(value));
+      return this;
+    },
+    removeLink(position) {
+      try{
+        if (isNaN(position)
+          || position < 1 
+          || position > this.chain.length
+          || Math.round(position) != position) throw new Error();
+        this.chain.splice(position - 1, 1);
+        return this;
+      }
+      catch(er){
+        this.chain = [];
+        throw new Error();
+      }
+    },
+    reverseChain() {
+      this.chain.reverse();
+      return this;
+    },
+    finishChain() {
+      let result = this.chain.map(x => '( ' + x + ' )').join('~~');
+      this.chain = [];
+      return result;
     }
-    return listLinks.splice(position - 1, 1);
-
-  },
-  reverseChain: () => listLinks.reverse(),
-  finishChain: () => {
-    let finish = listLinks.join('').slice(0, -2);
-    listLinks = [];
-    return finish;
-  }
-};
-
-module.exports = chainMaker;
+  };
+  
+  module.exports = chainMaker;
